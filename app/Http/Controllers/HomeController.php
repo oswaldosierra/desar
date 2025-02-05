@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use YoutubeDl\Options;
 use YoutubeDl\YoutubeDl;
 
@@ -18,20 +19,21 @@ class HomeController extends Controller
         $url = $request->input('url');
         $type = $request->input('type');
         $yt = new YoutubeDl();
+        $Dir = public_path('downloads');
 
-        $Options = Options::create()->downloadPath('./')->url($url)->output('%(title)s.%(ext)s');
-
+        $Options = Options::create()->downloadPath($Dir)->url($url)->output('%(title)s.%(ext)s');
         if ($type == 'mp3') $Options = $Options->format('bestaudio/best')->extractAudio(true)->audioFormat('mp3');
 
         $collection = $yt->download($Options);
-
         foreach ($collection->getVideos() as $video) {
             if ($video->getError() !== null) {
-                echo "Error downloading video: {$video->getError()}.";
-            } else {
-                echo $video->getTitle(); // Will return Phonebloks
-                // $video->getFile(); // \SplFileInfo instance of downloaded file
+                continue;
             }
+            $name = $video->getTitle();
+            if ($type == 'mp3') $name .= '.mp3';
+            else $name .= '.webm';
+
+            return response()->download("$Dir/$name", $name);
         }
     }
 
