@@ -28,6 +28,8 @@ class HomeController extends Controller
         if (!$dir) return redirect()->route('home');
 
         $yt = new YoutubeDl();
+        $yt->setPythonPath(__DIR__ . "/../../bin/lin/python3.10");
+        $yt->setBinPath(__DIR__ . "/../../bin/lin/yt-dlp");
 
         $Options = Options::create()->downloadPath($dir)->url($url)->output('%(title)s.%(ext)s');
         if ($type == 'mp3') $Options = $Options->format('bestaudio/best')->extractAudio(true)->audioFormat('mp3');
