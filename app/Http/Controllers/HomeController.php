@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use YoutubeDl\Options;
 use YoutubeDl\YoutubeDl;
+use Native\Laravel\Dialog;
+use Native\Laravel\Facades\Notification;
 
 class HomeController extends Controller
 {
@@ -16,27 +17,24 @@ class HomeController extends Controller
 
     public function download(Request $request)
     {
+        $request->validate([
+            'url' => 'required|url',
+            'type' => 'required|in:mp3,video'
+        ]);
         $url = $request->input('url');
         $type = $request->input('type');
-        $yt = new YoutubeDl();
-        $Dir = public_path('downloads');
 
-        $Options = Options::create()->downloadPath($Dir)->url($url)->output('%(title)s.%(ext)s');
+        $dir = Dialog::new()->title('Donde guardar los archvios?')->folders()->open();
+        if (!$dir) return redirect()->route('home');
+
+        $yt = new YoutubeDl();
+
+        $Options = Options::create()->downloadPath($dir)->url($url)->output('%(title)s.%(ext)s');
         if ($type == 'mp3') $Options = $Options->format('bestaudio/best')->extractAudio(true)->audioFormat('mp3');
 
-        $collection = $yt->download($Options);
-        foreach ($collection->getVideos() as $video) {
-            if ($video->getError() !== null) {
-                continue;
-            }
-            $name = $video->getTitle();
-            if ($type == 'mp3') $name .= '.mp3';
-            else $name .= '.webm';
+        $yt->download($Options);
 
-            return response()->download("$Dir/$name", $name);
-        }
+        Notification::title('Descarga Completada')->message('El archivo se ha descargado con exito')->show();
+        return redirect()->route('home');
     }
-
-    // ---------------------------
-    // pip3 install -U yt-dlp
 }
