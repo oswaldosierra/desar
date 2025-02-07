@@ -5,13 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{{ asset('icon.png') }}" type="image/png">
-
     <title>DESCAR</title>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -21,12 +15,19 @@
         <form action="{{ route('home') }}" method="post" id="form"
             class="card p-4 flex flex-col border border-gray-200 rounded-lg w-10/12">
             @csrf
-            <input type="text" name="url" class="input input-bordered w-full" placeholder="Ingrese Url">
+            <input type="text" name="url" class="input input-bordered w-full" placeholder="Ingrese Url del video"
+                value="{{ old('text') }}">
+            @error('url')
+                <span class="text-red-500">{{ $message }}</span>
+            @enderror
             <select name="type" class="select select-bordered">
                 <option value="mp3">Musica</option>
                 <option value="mp4">Video</option>
             </select>
-            <button class="btn btn-info" onclick="my_modal_1.showModal()">Buscar</button>
+            @error('type')
+                <span class="text-red-500">{{ $message }}</span>
+            @enderror
+            <button class="btn btn-info text-white" onclick="my_modal_1.showModal()">Descargar</button>
         </form>
     </div>
 

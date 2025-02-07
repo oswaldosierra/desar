@@ -19,8 +19,9 @@ class HomeController extends Controller
     {
         $request->validate([
             'url' => 'required|url',
-            'type' => 'required|in:mp3,video'
+            'type' => 'required|in:mp3,mp4'
         ]);
+
         $url = $request->input('url');
         $type = $request->input('type');
 
