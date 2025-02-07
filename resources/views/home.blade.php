@@ -29,6 +29,7 @@
             @enderror
             <button class="btn btn-info text-white" onclick="my_modal_1.showModal()">Descargar</button>
         </form>
+        <span class="opacity-50">Versión {{ Config::get('nativephp.version') }}</span>
     </div>
 
     <dialog id="my_modal_1" class="modal">
