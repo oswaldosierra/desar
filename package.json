@@ -1,6 +1,14 @@
 {
+    "name": "desar",
+    "version": "0.3.0",
+    "description": "Desar NativePHP Application",
     "private": true,
     "type": "module",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/oswaldosierra/desar.git"
+    },
+    "homepage": "https://github.com/oswaldosierra/desar",
     "scripts": {
         "build": "vite build",
         "dev": "vite"
